@@ -7,13 +7,13 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import yaml
-from pydantic import BaseSettings, Field
-from pydantic_settings import SettingsConfigDict
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DatabaseConfig(BaseSettings):
     host: str = Field(default="localhost", alias="DB_HOST")
-    port: int = Field(default=1030, alias="DB_PORT")
+    port: int = Field(default=7500, alias="DB_PORT")
     name: str = Field(default="adbot_dev", alias="DB_NAME")
     user: str = Field(default="adbot", alias="DB_USER")
     password: str = Field(alias="DB_PASSWORD")
@@ -30,7 +30,7 @@ class DatabaseConfig(BaseSettings):
 
 class RedisConfig(BaseSettings):
     host: str = Field(default="localhost", alias="REDIS_HOST")
-    port: int = Field(default=6379, alias="REDIS_PORT")
+    port: int = Field(default=7501, alias="REDIS_PORT")
     db: int = Field(default=0, alias="REDIS_DB")
     password: Optional[str] = Field(default=None, alias="REDIS_PASSWORD")
 
@@ -56,7 +56,7 @@ class RLConfig(BaseSettings):
 
 
 class MLConfig(BaseSettings):
-    tracking_uri: str = Field(default="http://localhost:5000", alias="MLFLOW_TRACKING_URI")
+    tracking_uri: str = Field(default="http://localhost:7502", alias="MLFLOW_TRACKING_URI")
     experiment_name: str = Field(default="adbot_experiments", alias="MLFLOW_EXPERIMENT_NAME")
     artifact_root: str = Field(default="./mlruns", alias="MLFLOW_ARTIFACT_ROOT")
 
@@ -69,7 +69,7 @@ class SecurityConfig(BaseSettings):
 
 class APIConfig(BaseSettings):
     host: str = Field(default="0.0.0.0", alias="API_HOST")
-    port: int = Field(default=8080, alias="API_PORT")
+    port: int = Field(default=7507, alias="API_PORT")
     cors_origins: list[str] = Field(default=["http://localhost:3000"], alias="CORS_ORIGINS")
     rate_limit_enabled: bool = Field(default=True, alias="RATE_LIMIT_ENABLED")
     rate_limit_per_minute: int = Field(default=60, alias="RATE_LIMIT_PER_MINUTE")
