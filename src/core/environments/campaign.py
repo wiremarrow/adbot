@@ -264,3 +264,7 @@ if __name__ == "__main__":
     print(f"\nCampaign Summary: {summary}")
     
     print("✅ Environment test completed!")
+
+
+# Alias for backwards compatibility with existing imports
+CampaignOptimizationEnv = SimpleCampaignEnv

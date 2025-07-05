@@ -39,7 +39,6 @@ AdBot uses a dedicated sequential port range (7500-7507) to avoid conflicts:
 > **Note**: These ports were specifically chosen to avoid conflicts with common development services. If you need to change them, update: `.env`, `docker-compose.yml`, `configs/default.yaml`, and `src/utils/config.py`.
 
 ---
-
 ## 🏗️ Project Architecture
 
 ### System Overview
@@ -156,6 +155,7 @@ Ensure you have the following installed:
    # Redis: localhost:7501
    
    # Initialize database with migrations
+   alembic upgrade head
    python scripts/init_db.py --sample-data
    ```
 
