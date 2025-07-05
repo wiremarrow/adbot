@@ -88,28 +88,44 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 pip install -e .
+
+# For RL training (required for core functionality)
+pip install stable-baselines3
 ```
 
 4. Set up environment variables:
 ```bash
 cp .env.example .env
-# Edit .env with your API credentials
+# Edit .env with your API credentials and database settings
 ```
 
-5. Initialize the database:
+5. Start the database services:
 ```bash
-python scripts/init_db.py
+docker-compose up -d postgres redis
 ```
 
-6. Start the development server:
+6. Initialize the database:
 ```bash
-uvicorn src.api.main:app --reload
+alembic upgrade head
+# Optional: Add sample data
+python scripts/init_db.py --sample-data
+```
+
+7. Start the development server:
+```bash
+uvicorn src.api.main:app --reload --port 7507
 ```
 
 ### Docker Setup
 
 ```bash
+# Start all services
 docker-compose up -d
+
+# Services will be available on:
+# - PostgreSQL: localhost:7500
+# - Redis: localhost:7501
+# - API: localhost:7507 (when running)
 ```
 
 ## 🎯 Usage
@@ -232,6 +248,12 @@ pytest tests/integration
 
 # Full test suite with coverage
 pytest --cov=src tests/
+
+# Test RL environment integration
+python test_rl_training.py
+
+# Test specific RL environment
+python test_rl_env.py
 ```
 
 ## 📈 Performance Monitoring
