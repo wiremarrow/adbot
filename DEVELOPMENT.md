@@ -21,6 +21,24 @@ This comprehensive guide covers all aspects of AdBot development, from initial s
 
 ---
 
+## 🔌 Port Configuration
+
+AdBot uses a dedicated sequential port range (7500-7507) to avoid conflicts:
+
+| Service | Host Port | Container Port | Purpose |
+|---------|-----------|----------------|---------|
+| PostgreSQL | 7500 | 5432 | Primary database |
+| Redis | 7501 | 6379 | Caching & sessions |
+| MLflow | 7502 | 5000 | ML experiment tracking |
+| Prometheus | 7503 | 9090 | Metrics collection |
+| Grafana | 7504 | 3000 | Metrics visualization |
+| Kafka | 7505 | 9092 | Event streaming |
+| Zookeeper | 7506 | 2181 | Kafka coordination |
+| AdBot API | 7507 | 8080 | Main REST API |
+
+> **Note**: These ports were specifically chosen to avoid conflicts with common development services. If you need to change them, update: `.env`, `docker-compose.yml`, `configs/default.yaml`, and `src/utils/config.py`.
+
+---
 ## 🏗️ Project Architecture
 
 ### System Overview
@@ -129,14 +147,15 @@ Ensure you have the following installed:
 
 3. **Database Setup**
    ```bash
-   # Start PostgreSQL (if using Docker)
-   docker run -d --name adbot-postgres \
-     -e POSTGRES_DB=adbot_dev \
-     -e POSTGRES_USER=adbot \
-     -e POSTGRES_PASSWORD=your_password \
-     -p 1030:5432 postgres:15
+   # Start all services using Docker Compose
+   docker-compose up -d postgres redis
    
-   # Initialize database
+   # Services will be available on:
+   # PostgreSQL: localhost:7500
+   # Redis: localhost:7501
+   
+   # Initialize database with migrations
+   alembic upgrade head
    python scripts/init_db.py --sample-data
    ```
 
@@ -167,12 +186,12 @@ docker-compose down
 | `APP_ENV` | Environment (development/production) | development | No |
 | `APP_DEBUG` | Debug mode | true | No |
 | `DB_HOST` | Database host | localhost | Yes |
-| `DB_PORT` | Database port | 1030 | Yes |
+| `DB_PORT` | Database port | 7500 | Yes |
 | `DB_NAME` | Database name | adbot_dev | Yes |
 | `DB_USER` | Database user | adbot | Yes |
 | `DB_PASSWORD` | Database password | - | Yes |
 | `REDIS_HOST` | Redis host | localhost | No |
-| `REDIS_PORT` | Redis port | 6379 | No |
+| `REDIS_PORT` | Redis port | 7501 | No |
 | `GOOGLE_ADS_DEV_TOKEN` | Google Ads developer token | - | For Google Ads |
 | `GOOGLE_ADS_CLIENT_ID` | OAuth2 client ID | - | For Google Ads |
 | `GOOGLE_ADS_CLIENT_SECRET` | OAuth2 client secret | - | For Google Ads |
@@ -1912,7 +1931,7 @@ Fixes #456
 sudo systemctl status postgresql
 
 # Check connection manually
-psql -h localhost -p 1030 -U adbot -d adbot_dev
+psql -h localhost -p 7500 -U adbot -d adbot_dev
 
 # Check from within Docker
 docker-compose exec adbot-api python -c "
@@ -1923,7 +1942,7 @@ print(f'DB URL: {config.database.url}')
 ```
 
 **Solutions**:
-1. **Wrong port**: Ensure DB_PORT=1030 in .env
+1. **Wrong port**: Ensure DB_PORT=7500 in .env
 2. **Password mismatch**: Verify DB_PASSWORD matches PostgreSQL setup
 3. **Service not running**: Start PostgreSQL service
 4. **Docker networking**: Use service names in docker-compose (postgres, not localhost)

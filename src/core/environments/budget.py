@@ -1,4 +1,16 @@
 """
+<<<<<<< HEAD
+Budget Allocation RL Environment - Placeholder
+
+This is a placeholder for the budget allocation environment.
+Currently redirects to SimpleCampaignEnv for testing.
+"""
+
+from .campaign import SimpleCampaignEnv
+
+# Placeholder - use SimpleCampaignEnv for now
+BudgetAllocationEnv = SimpleCampaignEnv
+=======
 Budget Allocation RL Environment
 """
 
@@ -501,3 +513,4 @@ class BudgetAllocationEnv(BaseAdEnvironment):
             'budget_utilization': total_spent / total_allocated if total_allocated > 0 else 0,
             'entities': entity_summaries,
         }
+>>>>>>> origin/main
