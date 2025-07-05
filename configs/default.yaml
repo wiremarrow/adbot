@@ -1,0 +1,174 @@
+# AdBot Default Configuration
+
+app:
+  name: "AdBot"
+  version: "0.1.0"
+  environment: "development"
+  debug: true
+
+# Database Configuration
+database:
+  host: "localhost"
+  port: 1030
+  name: "adbot_dev"
+  user: "adbot"
+  password: "${DB_PASSWORD}"
+  pool_size: 10
+
+# Redis Configuration
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: "${REDIS_PASSWORD}"
+
+# Reinforcement Learning Configuration
+reinforcement_learning:
+  algorithm: "PPO"  # Options: PPO, SAC, TD3, A2C
+  learning_rate: 0.0003
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  n_steps: 2048
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  
+  # Offline RL settings
+  offline:
+    algorithm: "CQL"  # Options: CQL, IQL, AWR, BC
+    conservative_weight: 5.0
+    
+# Bayesian Optimization Configuration
+bayesian_optimization:
+  n_initial_points: 10
+  n_calls: 100
+  acq_func: "EI"  # Expected Improvement
+  xi: 0.01  # Exploration-exploitation trade-off
+  kappa: 1.96  # UCB parameter
+
+# Platform Configurations
+platforms:
+  google_ads:
+    enabled: true
+    api_version: "v15"
+    developer_token: "${GOOGLE_ADS_DEV_TOKEN}"
+    client_id: "${GOOGLE_ADS_CLIENT_ID}"
+    client_secret: "${GOOGLE_ADS_CLIENT_SECRET}"
+    refresh_token: "${GOOGLE_ADS_REFRESH_TOKEN}"
+    customer_id: "${GOOGLE_ADS_CUSTOMER_ID}"
+    
+  facebook:
+    enabled: true
+    api_version: "v18.0"
+    app_id: "${FACEBOOK_APP_ID}"
+    app_secret: "${FACEBOOK_APP_SECRET}"
+    access_token: "${FACEBOOK_ACCESS_TOKEN}"
+    account_id: "${FACEBOOK_AD_ACCOUNT_ID}"
+    
+  tiktok:
+    enabled: false
+    api_version: "v1.3"
+    app_id: "${TIKTOK_APP_ID}"
+    app_secret: "${TIKTOK_APP_SECRET}"
+    access_token: "${TIKTOK_ACCESS_TOKEN}"
+    
+  linkedin:
+    enabled: false
+    api_version: "v2"
+    client_id: "${LINKEDIN_CLIENT_ID}"
+    client_secret: "${LINKEDIN_CLIENT_SECRET}"
+    access_token: "${LINKEDIN_ACCESS_TOKEN}"
+    
+  twitter:
+    enabled: false
+    api_version: "2"
+    consumer_key: "${TWITTER_CONSUMER_KEY}"
+    consumer_secret: "${TWITTER_CONSUMER_SECRET}"
+    access_token: "${TWITTER_ACCESS_TOKEN}"
+    access_token_secret: "${TWITTER_ACCESS_TOKEN_SECRET}"
+    
+  instagram:
+    enabled: false
+    # Uses Facebook Graph API
+    
+  email:
+    enabled: false
+    provider: "sendgrid"  # Options: sendgrid, mailchimp, aws_ses
+    api_key: "${EMAIL_API_KEY}"
+
+# Analytics Configuration
+analytics:
+  sentiment:
+    model: "distilbert-base-uncased-finetuned-sst-2-english"
+    batch_size: 32
+    
+  trends:
+    google_trends:
+      enabled: true
+      regions: ["US", "GB", "CA"]
+      
+# Monitoring Configuration
+monitoring:
+  metrics_port: 8000
+  log_level: "INFO"
+  
+  prometheus:
+    enabled: true
+    port: 9090
+    
+  grafana:
+    enabled: true
+    port: 3000
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8080
+  cors_origins: ["http://localhost:3000"]
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+
+# Feature Store Configuration
+feature_store:
+  provider: "feast"
+  online_store:
+    type: "redis"
+  offline_store:
+    type: "postgres"
+    
+# ML Model Configuration
+ml_models:
+  storage: "mlflow"
+  tracking_uri: "http://localhost:5000"
+  experiment_name: "adbot_experiments"
+  
+# Security Configuration
+security:
+  jwt_secret: "${JWT_SECRET}"
+  jwt_algorithm: "HS256"
+  jwt_expiration_minutes: 60
+  
+# Logging Configuration
+logging:
+  version: 1
+  formatters:
+    default:
+      format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: default
+      stream: ext://sys.stdout
+    file:
+      class: logging.handlers.RotatingFileHandler
+      formatter: default
+      filename: logs/adbot.log
+      maxBytes: 10485760  # 10MB
+      backupCount: 5
+  root:
+    level: INFO
+    handlers: [console, file]
